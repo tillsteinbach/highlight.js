@@ -1,0 +1,172 @@
+package CAN_ETH_CANnotScheduled;
+
+import core4inet.nodes.ethernet.AS6802.TTEEtherHost;
+import fico4omnet.bus.can.CanBus;
+import fico4omnet.nodes.can.CanNode;
+import signalsandgateways.BusEthernetGateway;
+
+network CAN_ETH_CANnotScheduled
+{
+parameters:
+     @display("bgb=,,white");
+     double measure_interval @unit(s) = default(1s);
+
+types: 
+ channel cable extends ned.DatarateChannel
+  {
+    datarate = 100Mbps;
+    //bit error rate (probability (0.0-1.0) per bit)
+    ber = 0.0;
+    //packet error rate (probability (0.0-1.0) per packet)
+    per = 0.0;
+  } 
+ channel can1000000 extends ned.DatarateChannel
+  {
+    datarate = 1000000Mbps;
+    //bit error rate (probability (0.0-1.0) per bit)
+    ber = 0.0;
+    //packet error rate (probability (0.0-1.0) per packet)
+    per = 0.0;
+  }
+
+submodules:
+  ecu2bAhinten: CanNode {
+    parameters: 
+
+    }
+
+  ecu1bBhinten: CanNode {
+    parameters: 
+
+    }
+
+  gw_CAN_B_vorne: gw_CAN_B_vorne {
+    parameters: 
+
+    }
+
+  ecu3bBvorne: CanNode {
+    parameters: 
+
+    }
+
+  ecu3bBhinten: CanNode {
+    parameters: 
+
+    }
+
+  ecu1bAvorne: CanNode {
+    parameters: 
+
+    }
+
+  gw_CAN_A_vorne: gw_CAN_A_vorne {
+    parameters: 
+
+    }
+
+  ecu3bAhinten: CanNode {
+    parameters: 
+
+    }
+
+  gw_CAN_B_hinten: gw_CAN_B_hinten {
+    parameters: 
+
+    }
+
+  ecu2bBhinten: CanNode {
+    parameters: 
+
+    }
+
+  ecu2bBvorne: CanNode {
+    parameters: 
+
+    }
+
+  gw_CAN_A_hinten: gw_CAN_A_hinten {
+    parameters: 
+
+    }
+
+  ecu1bBvorne: CanNode {
+    parameters: 
+
+    }
+
+  ecu1bAhinten: CanNode {
+    parameters: 
+
+    }
+
+  ecu2bAvorne: CanNode {
+    parameters: 
+
+    }
+
+  ecu3bAvorne: CanNode {
+    parameters: 
+
+    }
+
+  switch0: switch0 {
+    parameters: 
+    gates:
+      ethg[4];
+  }
+
+  switch1: switch1 {
+    parameters: 
+    gates:
+      ethg[4];
+  }
+
+  CAN_B_vorne: CanBus  {
+    parameters: 
+    gates:
+        gate[4];
+ }
+
+  CAN_A_vorne: CanBus  {
+    parameters: 
+    gates:
+        gate[4];
+ }
+
+  CAN_A_hinten: CanBus  {
+    parameters: 
+    gates:
+        gate[4];
+ }
+
+  CAN_B_hinten: CanBus  {
+    parameters: 
+    gates:
+        gate[4];
+ }
+
+connections:
+  switch1.ethg[2] <--> cable {  delay = 200ns; } <--> switch0.ethg[2];
+  CAN_A_hinten.gate[0] <--> ecu1bAhinten.gate;
+  CAN_A_hinten.gate[1] <--> ecu2bAhinten.gate;
+  CAN_A_hinten.gate[2] <--> ecu3bAhinten.gate;
+  CAN_A_vorne.gate[0] <--> ecu1bAvorne.gate;
+  CAN_A_vorne.gate[1] <--> ecu2bAvorne.gate;
+  CAN_A_vorne.gate[2] <--> ecu3bAvorne.gate;
+  CAN_B_hinten.gate[0] <--> ecu1bBhinten.gate;
+  CAN_B_hinten.gate[1] <--> ecu2bBhinten.gate;
+  CAN_B_hinten.gate[2] <--> ecu3bBhinten.gate;
+  CAN_B_vorne.gate[0] <--> ecu1bBvorne.gate;
+  CAN_B_vorne.gate[1] <--> ecu2bBvorne.gate;
+  CAN_B_vorne.gate[2] <--> ecu3bBvorne.gate;
+  switch0.ethg[0] <--> cable {  delay = 200ns; } <--> gw_CAN_A_hinten.ethg[0] ;
+  switch1.ethg[0] <--> cable {  delay = 200ns; } <--> gw_CAN_A_vorne.ethg[0] ;
+  switch0.ethg[1] <--> cable {  delay = 200ns; } <--> gw_CAN_B_hinten.ethg[0] ;
+  switch1.ethg[1] <--> cable {  delay = 200ns; } <--> gw_CAN_B_vorne.ethg[0] ;
+  CAN_A_hinten.gate[3] <--> gw_CAN_A_hinten.cang[0];
+  CAN_A_vorne.gate[3] <--> gw_CAN_A_vorne.cang[0];
+  CAN_B_hinten.gate[3] <--> gw_CAN_B_hinten.cang[0];
+  CAN_B_vorne.gate[3] <--> gw_CAN_B_vorne.cang[0];
+
+}
