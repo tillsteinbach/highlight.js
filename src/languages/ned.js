@@ -74,6 +74,7 @@ function(hljs) {
 
   return {
     aliases: ['ned'],
+    case_insensitive: true,
     keywords: NED_KEYWORDS,
     contains: [
       hljs.C_LINE_COMMENT_MODE,
