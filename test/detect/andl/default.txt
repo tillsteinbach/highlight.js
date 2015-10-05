@@ -1,0 +1,60 @@
+Network {
+	Networkname Examplenetwork
+	Cycle 1ms 
+	Ticklength 80ns 
+	Generationparameter {
+		Difference between RC Send and RC Bag 1 us
+	}
+	
+	EthernetCable cable {
+  		Delay 200 ns 
+  		Datarate 100 Mb/s
+ 	}
+	
+	CanBus canbus0 {
+		Bandwidth 500000 bit/s 
+		Errors false
+	}
+	
+	Ecu ecu0b0 {
+		CanNode canbus0 
+	}
+	
+	CanBus canbus1 {
+		Bandwidth 500000 bit/s 
+		Errors false
+	}
+	
+	Ecu ecu0b1 {
+		CanNode canbus1
+		Heterogeneous Message {
+			Period 100 ms 
+			Payload 8 byte 
+			CANid 111
+			BE
+			CANid 111
+			Receiver {
+				Rec ecu0b0
+			}
+		}
+	}
+		
+	Gateway gateway0 {
+		Connections {
+			Switch switch Cable cable
+			Can canbus0
+		}
+	}
+	
+	Gateway gateway1 {
+		Connections {
+			Switch switch Cable cable
+			Can canbus1
+		}
+	}
+	
+	Switch switch {
+		Port 0 to Gateway gateway0 Cable cable
+		Port 1 to Gateway gateway1 Cable cable
+	}	
+}
